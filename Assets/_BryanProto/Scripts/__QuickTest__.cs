@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Engarde.Bryan {
+namespace Engarde_Bryan {
 
 	public class __QuickTest__ : MonoBehaviour {
 

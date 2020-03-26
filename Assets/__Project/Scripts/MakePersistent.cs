@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Engarde {
+namespace Engarde_Bryan {
 
 	public sealed class MakePersistent : MonoBehaviour {
 

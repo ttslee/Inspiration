@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Engarde {
+namespace Engarde_Bryan {
 
 	public class MoveWithKeyboard : MonoBehaviour {
 

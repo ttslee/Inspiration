@@ -2,14 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Engarde.Bryan {
+namespace Engarde_Bryan {
 
 	public class CameraFollow : MonoBehaviour {
 
 		public Transform target;
+		private float zoffset;
+
+		private void Awake() {
+			zoffset = transform.position.z;
+		}
 
 		private void LateUpdate() {
-			transform.position = target.position;
+			Vector3 pos = target.position;
+			pos.z = zoffset;
+			transform.position = pos;
 		}
 
 	}

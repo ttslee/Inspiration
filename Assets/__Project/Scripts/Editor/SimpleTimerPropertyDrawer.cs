@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Engarde.CustomEditors {
+namespace Engarde_Bryan.CustomEditors {
 
 	[CustomPropertyDrawer(typeof(SimpleTimer))]
 	public class SimpleTimerPropertyDrawer : PropertyDrawer {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
-namespace Engarde {
+namespace Engarde_Bryan {
 
 	/// <summary>
 	/// Provides general quality of life helper functions.
