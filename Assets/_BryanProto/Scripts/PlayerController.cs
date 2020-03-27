@@ -27,9 +27,10 @@ namespace Engarde_Bryan.Player {
 		[Header("Constants")]
 
 		public float WalkSpeed = 8f;
-		public float WalkAccelIn = 40f;
-		public float WalkAccelOut = 50f;
-		public float WalkAccelReverse = 80f;
+		public float WalkAccelTimeMax = 0.3f;
+		public float WalkAccelIn = 80f;
+		public AnimationCurve WalkAccelCurve = AnimationCurve.Linear(0, 0, 1, 1);
+		public float WalkDecelMultiplier = 0.76f;
 		public const float AxisDeadzone = 0.3f;
 
 		[Space]
@@ -69,19 +70,23 @@ namespace Engarde_Bryan.Player {
 
 		public bool grounded;
 
-		public Vector2 velocity;
-
 		public SimpleTimer jumpHoldTimer = new SimpleTimer(0.2f);
 		public float currentGravityScale;
 		public float jumpHoldProgress;
 
 		#endregion
 
+		#region Fold Temporary
+
 		private void Awake() {
 			body = GetComponent<Rigidbody2D>();
 			boxCollider = GetComponent<BoxCollider2D>();
 
 			currentGravityScale = GravitySlow;
+
+			timerWalkIn.Duration = WalkAccelTimeMax;
+			timerWalkOut.Duration = WalkAccelTimeMax;
+
 			jumpHoldTimer.Duration = JumpHoldMax;
 		}
 
@@ -103,7 +108,9 @@ namespace Engarde_Bryan.Player {
 
 			switch (State) {
 				case PlayerState.Disabled: break;
-				case PlayerState.Movement: UpdateMovement(); break;
+				case PlayerState.Movement:
+					body.velocity = new Vector2(CalculateWalk(), CalculateJump());
+					break;
 				case PlayerState.Bash: UpdateBash(); break;
 				default: State = PlayerState.Disabled; break;
 			}
@@ -143,31 +150,132 @@ namespace Engarde_Bryan.Player {
 
 		}
 
-		void UpdateMovement() {
+		#endregion
 
-			Vector2 vel = body.velocity;
+		#region Movement
+
+
+		// CLASSES
+
+		public enum WalkState {
+			None, In, Max, Out
+		}
+
+
+		// VARIABLES
+
+		public WalkState walkState;
+
+		public SimpleTimer timerWalkIn = new SimpleTimer(0.2f);
+		public SimpleTimer timerWalkOut = new SimpleTimer(0.2f);
+
+		public int lastWalkDir = 0;
+
+
+		// CODE
+
+		float CalculateWalk() {
+
+			// Update timers
+			timerWalkIn.Update(true);
+			timerWalkOut.Update(true);
+
 
 			// Calculate direction of input, either -1, 0, or +1
-			float inputDir = 0f;
-			if (Mathf.Abs(Inputs.Horizontal) > AxisDeadzone) {
-				inputDir = Mathf.Sign(Inputs.Horizontal);
+			int inputDir = CalculateDirection(Inputs.Horizontal, AxisDeadzone);
+			bool isMoving = inputDir != 0;
+			bool wasMoving = lastWalkDir != 0;
+
+
+			// Restarting timers if pressed / released movement from last frame
+			if (isMoving && inputDir != lastWalkDir) {
+				// Just pressed movement or changed directions
+				timerWalkIn.Start();
+				walkState = WalkState.In;
+			}
+			if (!isMoving && wasMoving) {
+				// Just released movement
+				timerWalkOut.Start();
+				walkState = WalkState.Out;
+			}
+			lastWalkDir = inputDir;
+
+
+			// Switch on current walk action
+
+			switch (walkState) {
+				case WalkState.None:
+
+					return 0f;
+
+				case WalkState.In:
+
+					float vi;
+
+					// Calculate new velocity
+					if (inputDir * body.velocity.x < 0f && grounded) {
+
+						// Reverse directions instantly
+						vi = 0f;
+
+					} else {
+
+						// Normal movement
+						vi = Mathf.MoveTowards(
+							body.velocity.x,
+							WalkSpeed * inputDir,
+							WalkAccelCurve.Evaluate(timerWalkIn.Progress) * WalkAccelIn * Time.fixedDeltaTime);
+
+					}
+
+
+					if (Mathf.Abs(vi) == WalkSpeed) {
+						walkState = WalkState.Max;
+					}
+
+					return vi;
+
+				case WalkState.Max:
+
+					if (Mathf.Abs(body.velocity.x) > WalkSpeed) {
+						// Player is above speed cap: preserve current speed
+						return body.velocity.x;
+					} else {
+						// Player is below speed cap: return max speed
+						return inputDir * WalkSpeed;
+					}
+
+				case WalkState.Out:
+
+					float vo = body.velocity.x * WalkDecelMultiplier;
+					if (Mathf.Abs(vo) < 0.07f) vo = 0f;
+
+					if (vo == 0f) {
+						walkState = WalkState.None;
+					}
+
+					return vo;
+
+				default:
+					walkState = WalkState.None;
+					return 0f;
 			}
 
-			// Handle snapping
-			float curAccel;
-			if (vel.x * inputDir < 0f) {
-				curAccel = WalkAccelReverse;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Calculate integer direction from raw value.
+		/// </summary>
+		int CalculateDirection(float raw, float deadzone = 0.01f) {
+			if (raw < -deadzone) {
+				return -1;
+			} else if (raw > deadzone) {
+				return 1;
 			} else {
-				curAccel = inputDir != 0f ? WalkAccelIn : WalkAccelOut;
+				return 0;
 			}
-
-			// Calculate new horizontal velocity
-			vel.x = Mathf.MoveTowards(vel.x, inputDir * WalkSpeed, curAccel * Time.fixedDeltaTime);
-
-			vel.y = CalculateJump();
-
-			body.velocity = vel;
-
 		}
 
 		float CalculateJump() {
