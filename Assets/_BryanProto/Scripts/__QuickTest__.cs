@@ -6,9 +6,11 @@ namespace Engarde_Bryan {
 
 	public class __QuickTest__ : MonoBehaviour {
 
+		public float mag = 0.5f;
+
 		private void Update() {
 			if (Input.GetKeyDown(KeyCode.Y)) {
-				Debug.Log("General Test");
+				CameraController.Instance.RequestScreenShake(mag);
 			}
 		}
 

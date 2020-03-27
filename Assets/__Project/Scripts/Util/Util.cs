@@ -11,6 +11,19 @@ namespace Engarde_Bryan {
 	public static class Util {
 
 		/// <summary>
+		/// Calculate integer direction from raw value.
+		/// </summary>
+		public static int CalculateDirection(float raw, float deadzone = 0.01f) {
+			if (raw < -deadzone) {
+				return -1;
+			} else if (raw > deadzone) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		/// <summary>
 		/// Destroy all child gameobjects.
 		/// <para><i>Anakin no</i></para>
 		/// </summary>

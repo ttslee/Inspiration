@@ -4,18 +4,6 @@ using UnityEngine;
 
 namespace Engarde_Bryan.Player {
 
-	/// <summary>
-	/// Inputs to the PlayerController system.
-	/// </summary>
-	public class InputCommands {
-
-		public float Horizontal { get; set; }
-		public float JumpDownTimestamp { get; set; }
-		public bool JumpHold { get; set; }
-		public bool Bash { get; set; }
-
-	}
-
 	public class PlayerController : MonoBehaviour {
 
 		public enum PlayerState {
@@ -24,25 +12,11 @@ namespace Engarde_Bryan.Player {
 
 		#region Constants
 
-		[Header("Constants")]
-
-		public float WalkSpeed = 8f;
-		public float WalkAccelTimeMax = 0.3f;
-		public float WalkAccelIn = 80f;
-		public AnimationCurve WalkAccelCurve = AnimationCurve.Linear(0, 0, 1, 1);
-		public float WalkDecelMultiplier = 0.76f;
 		public const float AxisDeadzone = 0.3f;
 
-		[Space]
-		public float JumpHoldMax = 0.15f;
-		public float JumpMinVel = 5f;
-		public float JumpMaxVel = 8f;
-		public float JumpLerpPower = 0.5f;
-		public float JumpBufferTime = 0.2f;
+		[Header("Constants")]
 
-		[Space]
-		public float GravityQuick = 3f;
-		public float GravitySlow = 1f;
+		public float Gravity = -20f;
 		public float TerminalVelocity = 12f;
 
 		[Space]
@@ -50,6 +24,34 @@ namespace Engarde_Bryan.Player {
 		public float GroundedCastSizeHorzDecrease = 0.02f;
 		public LayerMask GroundedCastMask;
 
+		[Space]
+		public float WalkSpeed = 8f;
+		public float WalkAccel = 100f;
+		public float WalkReduceAccel = 80f;
+		public float WalkAirMultiplier = 0.65f;
+
+		[Space]
+		public float JumpHoldMax = 0.15f;
+		public float JumpSpeed = 5f;
+		public float JumpHorzBoost = 3f;
+		public float JumpBufferTime = 0.2f;
+		public float JumpCoyoteTime = 0.2f;
+
+		[Space]
+		public int BashCount = 2;
+		public float BashSpeed = 20f;
+		public float BashTime = 0.2f;
+		public float BashEndDecrease = 4f;
+		[Tooltip("Cooldown after bash before player can bash again.")]
+		public float BashCooldown = 0.5f;
+		[Tooltip("Cooldown until bash can be refilled if grounded.")]
+		public float BashRefreshDelay = 0.2f;
+		public float BashBuffer = 0.2f;
+
+		[Space]
+		public float ShakeContactGround = 0.2f;
+		public float ShakeJump = 0.3f;
+		public float ShakeBash = 0.7f;
 
 		Rigidbody2D body;
 		BoxCollider2D boxCollider;
@@ -68,31 +70,88 @@ namespace Engarde_Bryan.Player {
 
 		public InputCommands Inputs { get; set; }
 
+		public Vector2 BashPoint => Position + new Vector2(0, 0.5f);
+		public Vector2 Position => body.position;
+
+		[Space]
+		public Vector2 velocity;
+
+		[Space]
+		public int inputDir;
+		private int lastInputDir;
 		public bool grounded;
 
-		public SimpleTimer jumpHoldTimer = new SimpleTimer(0.2f);
-		public float currentGravityScale;
-		public float jumpHoldProgress;
+		[Space]
+		public SimpleTimer jumpHoldTimer;
+		public SimpleTimer jumpCoyoteTimer;
+
+		[Space]
+		public int remainingBashes;
+		private Vector2 bashDir;
+		public SimpleTimer bashTimer;
+		public SimpleTimer bashCooldownTimer;
+		public SimpleTimer bashRefreshTimer;
 
 		#endregion
 
-		#region Fold Temporary
+		#region Events
+
+		// Global
+
+		void OnContactGround() {
+			Debug.Log("Contact");
+			CameraController.Instance.RequestScreenShake(ShakeContactGround, Vector2.down);
+		}
+
+
+		// Walk
+
+		void OnBeginWalk() { }
+		void OnTurnAround() { }
+
+
+		// Jump
+
+		void OnJump() {
+			Debug.Log("Jump");
+			CameraController.Instance.RequestScreenShake(ShakeJump, velocity.normalized);
+		}
+
+
+		// Bash
+
+		void OnBashRefill() { }
+		void OnBashStart() {
+			Debug.Log("Bash");
+			CameraController.Instance.RequestScreenShake(ShakeBash, bashDir);
+		}
+		void OnBashEnd() { }
+
+		#endregion
+
+		#region Setup
 
 		private void Awake() {
 			body = GetComponent<Rigidbody2D>();
 			boxCollider = GetComponent<BoxCollider2D>();
 
-			currentGravityScale = GravitySlow;
+			jumpHoldTimer = new SimpleTimer(JumpHoldMax);
+			jumpCoyoteTimer = new SimpleTimer(JumpCoyoteTime);
 
-			timerWalkIn.Duration = WalkAccelTimeMax;
-			timerWalkOut.Duration = WalkAccelTimeMax;
+			bashRefreshTimer = new SimpleTimer(BashRefreshDelay);
+			bashTimer = new SimpleTimer(BashTime);
+			bashCooldownTimer = new SimpleTimer(BashCooldown);
 
-			jumpHoldTimer.Duration = JumpHoldMax;
+			remainingBashes = BashCount;
 		}
 
 		private void Start() {
 			State = PlayerState.Movement;
 		}
+
+		#endregion
+
+		#region Update
 
 		private void Update() {
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
@@ -103,31 +162,52 @@ namespace Engarde_Bryan.Player {
 
 		private void FixedUpdate() {
 
-			UpdateGrounded();
-			ApplyGravity();
+			// Update timers
+			jumpHoldTimer.Update(true);
+			jumpCoyoteTimer.Update(true);
+			bashTimer.Update(true);
+			bashRefreshTimer.Update(true);
+			bashCooldownTimer.Update(true);
 
+			// Set velocity to current velocity
+			velocity = body.velocity;
+
+			// Update direction variables
+			lastInputDir = inputDir;
+			inputDir = Util.CalculateDirection(Inputs.Horizontal, AxisDeadzone);
+
+			// Run global updates
+			UpdateGrounded();
+			UpdateBashRefill();
+			CheckStartBash();
+
+			// Execute state machine
 			switch (State) {
 				case PlayerState.Disabled: break;
-				case PlayerState.Movement:
-					body.velocity = new Vector2(CalculateWalk(), CalculateJump());
-					break;
+				case PlayerState.Movement: UpdateMovement(); break;
 				case PlayerState.Bash: UpdateBash(); break;
 				default: State = PlayerState.Disabled; break;
 			}
+
+			// Apply calculated velocity
+			body.velocity = velocity;
 
 		}
 
 		void UpdateGrounded() {
 
+			bool lastGrounded = grounded;
+
 			grounded = false;
 
+			// Boxcast below feet to find ground
 			Vector2 size = boxCollider.size * transform.localScale;
 			size.x -= GroundedCastSizeHorzDecrease;
-
-			var hits = Physics2D.BoxCastAll(transform.position, size, 0f, Vector2.down, GroundedCastDistance, GroundedCastMask);
-
+			Vector3 pos = transform.position + (Vector3)boxCollider.offset;
+			var hits = Physics2D.BoxCastAll(pos, size, 0f, Vector2.down, GroundedCastDistance, GroundedCastMask);
 			//Debug.Log(hits.ToCommaString(x => x.collider));
 
+			// Search through hits for surfaces
 			foreach (var hit in hits) {
 				if (hit.collider != null) {
 					EnvironmentSurface surface = hit.collider.gameObject.GetComponent<EnvironmentSurface>();
@@ -136,158 +216,70 @@ namespace Engarde_Bryan.Player {
 					}
 				}
 			}
+
+			// Raise event on touching ground
+			if (grounded && lastGrounded != grounded) {
+				OnContactGround();
+			}
+
+			// Set coyote time upon leaving ground
+			if (!grounded && lastGrounded != grounded) {
+				jumpCoyoteTimer.Start();
+			}
+
+		}
+
+		#endregion
+
+		#region State - Movement
+
+		void UpdateMovement() {
+
+			ApplyGravity();
+			Walk();
+			Jump();
+
 		}
 
 		void ApplyGravity() {
 
-			Vector2 vel = body.velocity;
-
-			currentGravityScale = Mathf.Lerp(GravityQuick, GravitySlow, jumpHoldProgress);
-
-			vel.y += currentGravityScale * Physics2D.gravity.y * Time.fixedDeltaTime;
-			vel.y = Mathf.Max(-TerminalVelocity, vel.y);
-			body.velocity = vel;
+			velocity.y += Gravity * Time.fixedDeltaTime;
+			velocity.y = Mathf.Max(-TerminalVelocity, velocity.y);
 
 		}
 
-		#endregion
+		void Walk() {
 
-		#region Movement
+			// Cache previous velocity to determine if player just turned around
+			float lastvx = velocity.x;
 
+			// Reduce acceleration if airborne
+			float accelMult = grounded ? 1f : WalkAirMultiplier;
 
-		// CLASSES
-
-		public enum WalkState {
-			None, In, Max, Out
-		}
-
-
-		// VARIABLES
-
-		public WalkState walkState;
-
-		public SimpleTimer timerWalkIn = new SimpleTimer(0.2f);
-		public SimpleTimer timerWalkOut = new SimpleTimer(0.2f);
-
-		public int lastWalkDir = 0;
-
-
-		// CODE
-
-		float CalculateWalk() {
-
-			// Update timers
-			timerWalkIn.Update(true);
-			timerWalkOut.Update(true);
-
-
-			// Calculate direction of input, either -1, 0, or +1
-			int inputDir = CalculateDirection(Inputs.Horizontal, AxisDeadzone);
-			bool isMoving = inputDir != 0;
-			bool wasMoving = lastWalkDir != 0;
-
-
-			// Restarting timers if pressed / released movement from last frame
-			if (isMoving && inputDir != lastWalkDir) {
-				// Just pressed movement or changed directions
-				timerWalkIn.Start();
-				walkState = WalkState.In;
-			}
-			if (!isMoving && wasMoving) {
-				// Just released movement
-				timerWalkOut.Start();
-				walkState = WalkState.Out;
-			}
-			lastWalkDir = inputDir;
-
-
-			// Switch on current walk action
-
-			switch (walkState) {
-				case WalkState.None:
-
-					return 0f;
-
-				case WalkState.In:
-
-					float vi;
-
-					// Calculate new velocity
-					if (inputDir * body.velocity.x < 0f && grounded) {
-
-						// Reverse directions instantly
-						vi = 0f;
-
-					} else {
-
-						// Normal movement
-						vi = Mathf.MoveTowards(
-							body.velocity.x,
-							WalkSpeed * inputDir,
-							WalkAccelCurve.Evaluate(timerWalkIn.Progress) * WalkAccelIn * Time.fixedDeltaTime);
-
-					}
-
-
-					if (Mathf.Abs(vi) == WalkSpeed) {
-						walkState = WalkState.Max;
-					}
-
-					return vi;
-
-				case WalkState.Max:
-
-					if (Mathf.Abs(body.velocity.x) > WalkSpeed) {
-						// Player is above speed cap: preserve current speed
-						return body.velocity.x;
-					} else {
-						// Player is below speed cap: return max speed
-						return inputDir * WalkSpeed;
-					}
-
-				case WalkState.Out:
-
-					float vo = body.velocity.x * WalkDecelMultiplier;
-					if (Mathf.Abs(vo) < 0.07f) vo = 0f;
-
-					if (vo == 0f) {
-						walkState = WalkState.None;
-					}
-
-					return vo;
-
-				default:
-					walkState = WalkState.None;
-					return 0f;
-			}
-
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Calculate integer direction from raw value.
-		/// </summary>
-		int CalculateDirection(float raw, float deadzone = 0.01f) {
-			if (raw < -deadzone) {
-				return -1;
-			} else if (raw > deadzone) {
-				return 1;
+			// Accelerate toward new velocity
+			if (Mathf.Abs(velocity.x) > WalkSpeed && inputDir == Mathf.Sign(velocity.x)) {
+				// Reduce overspeed
+				velocity.x = Mathf.MoveTowards(velocity.x, inputDir * WalkSpeed, WalkReduceAccel * accelMult * Time.fixedDeltaTime);
 			} else {
-				return 0;
+				// Apply normal movement
+				velocity.x = Mathf.MoveTowards(velocity.x, inputDir * WalkSpeed, WalkAccel * accelMult * Time.fixedDeltaTime);
 			}
+
+			// Raise animation events
+			if (grounded && inputDir != 0 && Mathf.Sign(lastvx) != Mathf.Sign(velocity.x)) {
+				OnTurnAround();
+			}
+			if (grounded && lastInputDir == 0 && inputDir != 0) {
+				OnBeginWalk();
+			}
+
 		}
 
-		float CalculateJump() {
-
-			jumpHoldTimer.Update(true);
-
-			float vy = body.velocity.y;
+		void Jump() {
 
 			// Jump continuation
 			if (Inputs.JumpHold && jumpHoldTimer.Running) {
-				jumpHoldProgress = Mathf.Pow(jumpHoldTimer.Progress, JumpLerpPower);
-				vy = Mathf.Lerp(JumpMinVel, JumpMaxVel, jumpHoldProgress);
+				velocity.y = JumpSpeed;
 			}
 
 			// Prevent regrabbing of jump after release
@@ -296,18 +288,61 @@ namespace Engarde_Bryan.Player {
 			}
 
 			// Start jump and handle buffered jumps
-			if (Time.time - Inputs.JumpDownTimestamp < JumpBufferTime && grounded) {
+			if (Inputs.JumpDown.Get(JumpBufferTime) && (grounded || jumpCoyoteTimer.Running)) {
+				Inputs.JumpDown.Clear(); // consume buffer
 				jumpHoldTimer.Start();
-				vy = JumpMinVel;
-				jumpHoldProgress = 0f;
+				velocity.y = JumpSpeed;
+				velocity.x += JumpHorzBoost * inputDir;
+				OnJump();
 			}
 
-			return vy;
+		}
+
+		#endregion
+
+		#region State - Bash
+
+		void UpdateBashRefill() {
+
+			if (grounded && bashRefreshTimer.Done && remainingBashes < BashCount) {
+				remainingBashes = BashCount;
+				OnBashRefill();
+			}
+
+		}
+
+		void CheckStartBash() {
+
+			if (State == PlayerState.Movement && bashCooldownTimer.Done && remainingBashes > 0 && Inputs.BashDown.Get(BashBuffer)) {
+
+				Inputs.BashDown.Clear();
+
+				--remainingBashes;
+				bashDir = new Vector2(Mathf.Cos(Inputs.BashAngle), Mathf.Sin(Inputs.BashAngle));
+				bashTimer.Start();
+				bashRefreshTimer.Start();
+				OnBashStart();
+
+				State = PlayerState.Bash;
+
+			}
+
 		}
 
 		void UpdateBash() {
 
+			if (bashTimer.Running) {
+				velocity = BashSpeed * bashDir;
+			} else {
+				bashCooldownTimer.Start();
+				velocity = Vector2.MoveTowards(velocity, Vector2.zero, BashEndDecrease);
+				OnBashEnd();
+				State = PlayerState.Movement;
+			}
+
 		}
+
+		#endregion
 
 	}
 
