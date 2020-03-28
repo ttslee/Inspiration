@@ -6,11 +6,12 @@ namespace Engarde_Johnny.Player
 {
     public class LimbController : MonoBehaviour
     {
-        private List<Limb> limbs = new List<Limb>();
+        private List<Limb> limbs = new List<Limb>(); //list of all limbs from child to body
         public Transform root;
-        public Vector2 targetPos;
-        private bool dirFlip = false;
-        private int force = 1;
+        public bool useMousePos = false;
+        public Vector2 targetPos; //pos we want to rotate to
+        private bool dirFlip = false; 
+        private int force = 10; //controls how strong/fast a limb moves
 
         void Start()
         {
@@ -25,10 +26,14 @@ namespace Engarde_Johnny.Player
                 limbs.Add(new Limb(hinge.attachedRigidbody, dirFlip));
                 hinge = hinge.connectedBody.GetComponent<HingeJoint2D>();
             }
+            if (useMousePos == true)
+                targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
+            if (useMousePos == true)
+                targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             foreach (var limb in limbs)
                 limb.RotateTowards(targetPos + (Vector2)root.position, force);
         }
