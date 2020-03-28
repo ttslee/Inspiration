@@ -1263,6 +1263,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1103197467}
   - component: {fileID: 1103197466}
+  - component: {fileID: 1103197468}
+  - component: {fileID: 1103197469}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1316,6 +1318,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1103197468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103197465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5774d345ff78b2446aa513945a0ab40b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1103197469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103197465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb33a63c04ecb049af77fd73d029bfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1105473890
 GameObject:
   m_ObjectHideFlags: 0
@@ -2029,8 +2055,8 @@ HingeJoint2D:
     m_MaximumMotorForce: 10000
   m_UseLimits: 1
   m_AngleLimits:
-    m_LowerAngle: -10
-    m_UpperAngle: 10
+    m_LowerAngle: -5
+    m_UpperAngle: 5
 --- !u!50 &1694665790
 Rigidbody2D:
   serializedVersion: 4
