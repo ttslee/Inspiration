@@ -30,7 +30,7 @@ namespace Engarde_Bryan.Player {
 
 		public InputBuffer BashDown { get; set; }
 		/// <summary>
-		/// Angle in radians. 0 is to the right.
+		/// Angle in degrees. 0 is to the right.
 		/// </summary>
 		public float BashAngle { get; set; }
 

@@ -34,9 +34,9 @@ namespace Engarde_Bryan.Player {
 				Vector2 delta = (Vector2)CameraController.MainCamera.ScreenToWorldPoint(Input.mousePosition) - pc.BashPoint;
 
 				if (delta == Vector2.zero) {
-					commands.BashAngle = Mathf.PI / 2f; // up
+					commands.BashAngle = 90f; // up
 				} else {
-					commands.BashAngle = Mathf.Atan2(delta.y, delta.x);
+					commands.BashAngle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
 				}
 
 			}
