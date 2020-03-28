@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Engard_Johnny.Player
+namespace Engarde_Johnny.Player
 {
     public class LimbController : MonoBehaviour
     {

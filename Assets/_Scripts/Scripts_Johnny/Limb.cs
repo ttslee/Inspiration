@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Engard_Johnny
+namespace Engarde_Johnny
 {
     public class Limb //Each individual Limb
     {
