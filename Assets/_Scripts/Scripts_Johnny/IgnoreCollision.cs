@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IgnoreCollision : MonoBehaviour
+namespace Engard_Johnny
 {
-    //This script is mainly used to prevent Player limbs from touching eachother
-    void Start()
+    public class IgnoreCollision : MonoBehaviour
     {
-        var colliders = GetComponentsInChildren<Collider2D>(); //List of all Colliders under Parent
-        for(int i = 0; i < colliders.Length; i++)
+        //This script is mainly used to prevent Player limbs from touching eachother
+        void Start()
         {
-            for(int j = i + 1; j < colliders.Length; j++)
+            var colliders = GetComponentsInChildren<Collider2D>(); //List of all Colliders under Parent
+            for (int i = 0; i < colliders.Length; i++)
             {
-                Physics2D.IgnoreCollision(colliders[i], colliders[j % colliders.Length]);
+                for (int j = i + 1; j < colliders.Length; j++)
+                {
+                    Physics2D.IgnoreCollision(colliders[i], colliders[j % colliders.Length]);
+                }
             }
         }
     }
