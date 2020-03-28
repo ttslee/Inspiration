@@ -189,6 +189,12 @@ namespace Engarde_Johnny.Player
             boundWindowTimer = new SimpleTimer(BoundWindow);
 
             remainingBashes = BashCount;
+
+            //Color
+            SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
+            Color newColor = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+            foreach (SpriteRenderer sprite in sprites)
+                sprite.color = newColor;
         }
 
         private void Start()
