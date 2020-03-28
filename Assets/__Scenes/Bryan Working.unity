@@ -701,6 +701,7 @@ MonoBehaviour:
   JumpHorzBoost: 1
   JumpBufferTime: 0.2
   JumpCoyoteTime: 0.16
+  BashUnlimited: 1
   BashCount: 5
   BashAngleClamp: 20
   BashSpeed: 18

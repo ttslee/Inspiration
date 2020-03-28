@@ -42,6 +42,7 @@ namespace Engarde_Bryan.Player {
 		public float JumpCoyoteTime = 0.2f;
 
 		[Space]
+		public bool BashUnlimited;
 		public int BashCount = 2;
 		public float BashAngleClamp = 15f;
 		public float BashSpeed = 20f;
@@ -313,7 +314,7 @@ namespace Engarde_Bryan.Player {
 
 		#endregion
 
-		#region State - Movement
+		#region Movement
 
 		void UpdateMovement() {
 
@@ -355,6 +356,10 @@ namespace Engarde_Bryan.Player {
 
 		}
 
+		#endregion
+
+		#region Jumps
+
 		void UpdateJump() {
 
 			// Jump continuation
@@ -372,8 +377,10 @@ namespace Engarde_Bryan.Player {
 		void AnyJump() {
 
 			if (inputDir != -bashDir && boundWindowTimer.Running) {
+				// Bound if in bound window and controller neutral / inline with bash direction
 				Bound();
 			} else {
+				// Jump in all other scenarios
 				Jump();
 			}
 
@@ -431,7 +438,7 @@ namespace Engarde_Bryan.Player {
 
 		#endregion
 
-		#region State - Bash
+		#region Bash
 
 		void UpdateBashRefill() {
 
@@ -444,12 +451,15 @@ namespace Engarde_Bryan.Player {
 
 		void CheckStartBash() {
 
-			if (State == PlayerState.Movement && bashCooldownTimer.Done && remainingBashes > 0 && Inputs.BashDown.Get(BashBuffer)) {
+			if (State == PlayerState.Movement && bashCooldownTimer.Done && (remainingBashes > 0 || BashUnlimited) && Inputs.BashDown.Get(BashBuffer)) {
 
 				Inputs.BashDown.Clear();
 				jumpHoldTimer.Stop(); // cancel previous jump
 
-				--remainingBashes;
+				// Consume bash token if not unlimited
+				if (!BashUnlimited) { 
+					--remainingBashes;
+				}
 
 				// Check if angle is within rounding range
 				float angle = Inputs.BashAngle;

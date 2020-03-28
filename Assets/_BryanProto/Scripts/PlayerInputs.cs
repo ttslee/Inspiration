@@ -4,17 +4,34 @@ using UnityEngine;
 
 namespace Engarde_Bryan.Player {
 
+	/// <summary>
+	/// Buffer an input down event.
+	/// </summary>
 	public class InputBuffer {
 
-		private float time { get; set; }
+		private float Timestamp { get; set; }
 
+		/// <summary>
+		/// Create a new buffer starting in the cleared state.
+		/// </summary>
 		public InputBuffer() {
 			Clear();
 		}
 
-		public void Set() => time = Time.time;
-		public bool Get(float maxBuffer) => Time.time - time < maxBuffer;
-		public void Clear() => time = float.MinValue;
+		/// <summary>
+		/// Set the buffer to the current time.
+		/// </summary>
+		public void Set() => Timestamp = Time.time;
+
+		/// <summary>
+		/// Check if buffer is in given window. Does not consume.
+		/// </summary>
+		public bool Get(float maxBuffer) => Time.time - Timestamp < maxBuffer;
+
+		/// <summary>
+		/// Consume the buffer.
+		/// </summary>
+		public void Clear() => Timestamp = float.MinValue;
 
 	}
 
