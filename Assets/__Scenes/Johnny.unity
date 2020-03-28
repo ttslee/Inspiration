@@ -423,6 +423,7 @@ GameObject:
   - component: {fileID: 569807673}
   - component: {fileID: 569807672}
   - component: {fileID: 569807674}
+  - component: {fileID: 569807675}
   m_Layer: 0
   m_Name: armleft
   m_TagString: Untagged
@@ -556,6 +557,20 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.2, y: 0.26}
   m_Direction: 1
+--- !u!114 &569807675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569807669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 621626925}
+  targetPos: {x: -1.06, y: 0.66}
 --- !u!1 &621626924
 GameObject:
   m_ObjectHideFlags: 0
@@ -649,7 +664,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 621626924}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1090,6 +1105,7 @@ GameObject:
   - component: {fileID: 955755195}
   - component: {fileID: 955755194}
   - component: {fileID: 955755193}
+  - component: {fileID: 955755197}
   m_Layer: 0
   m_Name: armRight
   m_TagString: Untagged
@@ -1223,6 +1239,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &955755197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955755191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 621626925}
+  targetPos: {x: 1.06, y: 0.57}
 --- !u!1 &1059843975
 GameObject:
   m_ObjectHideFlags: 0
@@ -1385,6 +1415,7 @@ GameObject:
   - component: {fileID: 1314997160}
   - component: {fileID: 1314997159}
   - component: {fileID: 1314997161}
+  - component: {fileID: 1314997162}
   m_Layer: 0
   m_Name: leg_left
   m_TagString: Untagged
@@ -1518,6 +1549,20 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000047683716, y: 5.684342e-14}
   m_Size: {x: 1.8000004, y: 0.26000005}
   m_Direction: 1
+--- !u!114 &1314997162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314997156}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 621626925}
+  targetPos: {x: -1.53, y: -1.85}
 --- !u!1 &1577887118
 GameObject:
   m_ObjectHideFlags: 0
@@ -2107,6 +2152,7 @@ GameObject:
   - component: {fileID: 1718086554}
   - component: {fileID: 1718086553}
   - component: {fileID: 1718086552}
+  - component: {fileID: 1718086556}
   m_Layer: 0
   m_Name: leg_right
   m_TagString: Untagged
@@ -2240,6 +2286,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1718086556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718086550}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 621626925}
+  targetPos: {x: 2.21, y: -0.84}
 --- !u!1 &1900284319
 GameObject:
   m_ObjectHideFlags: 0
