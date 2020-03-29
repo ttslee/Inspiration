@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 namespace Engarde_Bryan.Player {
 
-	public class PlayerController : NetworkBehaviour {
+	public class PlayerController : MonoBehaviour {
 
 		public enum PlayerState {
 			Disabled, Movement, Bash
@@ -201,8 +201,6 @@ namespace Engarde_Bryan.Player {
 		}
 
 		private void FixedUpdate() {
-            if (!isLocalPlayer)
-                return;
             // Update timers
             jumpHoldTimer.Update(true);
 			jumpCoyoteTimer.Update(true);
@@ -241,8 +239,6 @@ namespace Engarde_Bryan.Player {
 		}
 
 		void UpdateGrounded() {
-            if (!isLocalPlayer)
-                return;
             bool lastGrounded = grounded;
 
 			grounded = false;
@@ -274,8 +270,6 @@ namespace Engarde_Bryan.Player {
 		}
 
 		void UpdateReflect() {
-            if (!isLocalPlayer)
-                return;
             if (reflectFlag) {
 				reflectFlag = false;
 
@@ -296,8 +290,6 @@ namespace Engarde_Bryan.Player {
 		}
 
 		private void OnCollisionEnter2D(Collision2D collision) {
-            if (!isLocalPlayer)
-                return;
             EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
 			if (surface != null) {
 				if (surface.surfaceType == SurfaceTypes.Generic) {
