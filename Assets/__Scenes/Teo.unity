@@ -226,7 +226,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 69210220}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22, y: 0.2, z: -3.53125}
+  m_LocalPosition: {x: -22, y: 2.5, z: -3.53125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -548,7 +548,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650791325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19, y: 0.2, z: -3.53125}
+  m_LocalPosition: {x: 19, y: 2.5, z: -3.53125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3913,7 +3913,7 @@ MonoBehaviour:
   networkAddress: localhost
   maxConnections: 4
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 8454702703515775121, guid: 175ec99666212424388d44132e28f342,
+  playerPrefab: {fileID: 799469096522680389, guid: d0ad7a2d078c0b34da7fa8da93621247,
     type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
