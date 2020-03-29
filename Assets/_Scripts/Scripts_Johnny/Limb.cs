@@ -13,12 +13,14 @@ namespace Engarde_Johnny
         private Vector2 relativeOffset => offset.x/2 * root.right + offset.y/2 * root.up;
 
         private bool flip = false;
+        private bool sin = false;
 
-        public Limb(Rigidbody2D rb, bool flipped)
+        public Limb(Rigidbody2D rb, bool flipped, bool sin)
         {
             this.rigidBody = rb;
             this.root = rb.transform;
             this.flip = flipped;
+            this.sin = sin;
 
             offset = root.GetComponent<HingeJoint2D>().anchor;
 
@@ -31,8 +33,10 @@ namespace Engarde_Johnny
             if (flip)
                 direction *= -1f;
             float angle = AngleFromDirection(direction);
-
-            angle = Mathf.DeltaAngle(root.eulerAngles.z, angle);
+            var cangle = root.eulerAngles.z;
+            if (sin)
+                cangle -= 180;
+            angle = Mathf.DeltaAngle(cangle, angle);
             float x = angle > 0 ? 1 : -1;
             angle = Mathf.Abs(angle * .1f);
             if (angle > 2)

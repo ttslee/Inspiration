@@ -64,6 +64,14 @@ namespace Engarde_Johnny.Player
         public float ShakeBash = 0.7f;
 
         Rigidbody2D body;
+
+        [Space]
+        public Rigidbody2D limbBody;
+        public LimbController legUR;
+        public LimbController legR;
+        public LimbController legUL;
+        public LimbController legL;
+
         //PlayerAnimator animator;
 
         #endregion
@@ -192,7 +200,7 @@ namespace Engarde_Johnny.Player
 
             //Color
             SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
-            Color newColor = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+            Color newColor = new Color(UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f));
             foreach (SpriteRenderer sprite in sprites)
                 sprite.color = newColor;
         }
@@ -270,6 +278,10 @@ namespace Engarde_Johnny.Player
             // Search through hits for surfaces
             if (groundScript.IsGrounded())
                 grounded = true;
+
+            //Making limbBody upright
+            if (grounded)
+                RotateTo(limbBody, 0, 1000);
 
             // Raise event on touching ground
             if (grounded && lastGrounded != grounded)
@@ -570,6 +582,28 @@ namespace Engarde_Johnny.Player
             velocity = Vector2.MoveTowards(velocity, Vector2.zero, BashEndDecrease);
             OnBashEnd();
 
+        }
+
+        #endregion
+
+        #region LimbControl
+
+        //Specifically used for the body
+        void RotateTo(Rigidbody2D rigidbody, float angle, float force)
+        {
+            angle = Mathf.DeltaAngle(transform.eulerAngles.z, angle);
+
+            var x = angle > 0 ? 1 : -1;
+            angle = Mathf.Abs(angle * .1f);
+            if (angle > 2)
+            {
+                angle = 2;
+            }
+            angle *= .5f;
+            angle *= (1 + angle);
+
+            rigidbody.angularVelocity *= .5f;
+            rigidbody.AddTorque(angle * force);
         }
 
         #endregion
