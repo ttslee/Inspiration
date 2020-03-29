@@ -37,10 +37,13 @@ namespace Engarde_Johnny.Player
 
         private void FixedUpdate()
         {
-            if (useMousePos == true)
-                targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             foreach (var limb in limbs)
-                limb.RotateTowards(targetPos + (Vector2)root.position, force);
+            {
+                if (useMousePos == false)
+                    limb.RotateTowards(targetPos + (Vector2)root.position, force);
+                else
+                    limb.RotateTowards(Camera.main.ScreenToWorldPoint(Input.mousePosition), force);
+            }
         }
 
         private void OnDrawGizmos()
@@ -49,7 +52,10 @@ namespace Engarde_Johnny.Player
                 limb.OnDrawGizmos();
 
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(targetPos + (Vector2)root.position, .1f);
+            if (useMousePos == false)
+                Gizmos.DrawSphere(targetPos + (Vector2)root.position, .1f);
+            else
+                Gizmos.DrawSphere(Camera.main.ScreenToWorldPoint(Input.mousePosition), .1f);
         }
 
     }

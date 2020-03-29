@@ -12,7 +12,7 @@ namespace Engarde_Johnny.Player
 
         public bool IsGrounded()
         {
-            float extraRange = .6f;
+            float extraRange = .5f;
             RaycastHit2D rayCast1 = Physics2D.Raycast(leftLegCollider.bounds.center, Vector2.down, leftLegCollider.bounds.extents.y + extraRange, groundLayer);
             RaycastHit2D rayCast2 = Physics2D.Raycast(rightLegCollider.bounds.center, Vector2.down, rightLegCollider.bounds.extents.y + extraRange, groundLayer);
             Color rayColor;
