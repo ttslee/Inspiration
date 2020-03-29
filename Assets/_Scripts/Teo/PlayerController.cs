@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Engarde_Teo;
+using Engarde_Teo.Player;
 using Mirror;
 namespace Engarde_Teo.Player
 {
@@ -27,10 +29,6 @@ namespace Engarde_Teo.Player
         public float ReflectNormalY = 0.4f;
         public float ReflectMove = 5f;
         public Vector2 ReflectBounce = new Vector2(1, 0.3f);
-
-        [Space]
-        public BoxCollider2D GroundCheck;
-        public LayerMask GroundedCastMask;
 
         [Space]
         public float WalkSpeed = 8f;
@@ -66,7 +64,17 @@ namespace Engarde_Teo.Player
         public float ShakeBash = 0.7f;
 
         Rigidbody2D body;
-        PlayerAnimator animator;
+        SpriteRenderer[] sprites;
+
+        [Space]
+        public Rigidbody2D limbHead;
+        public Rigidbody2D limbBody;
+        public LimbController legUR;
+        public LimbController legR;
+        public LimbController legUL;
+        public LimbController legL;
+
+        //PlayerAnimator animator;
 
         #endregion
 
@@ -95,6 +103,8 @@ namespace Engarde_Teo.Player
         [Space]
         public int inputDir;
         private int lastInputDir;
+
+        private GroundCheck groundScript;
         public bool grounded;
         public bool reflectFlag;
         public Vector2 reflectNormal;
@@ -127,7 +137,6 @@ namespace Engarde_Teo.Player
             //CameraController.Instance.RequestScreenShake(ShakeContactGround, Vector2.down);
         }
 
-
         // Walk
 
         void OnBeginWalk()
@@ -150,7 +159,6 @@ namespace Engarde_Teo.Player
             //Debug.Log("Super Jump");
         }
 
-
         // Bash
 
         void OnBashRefill()
@@ -162,13 +170,13 @@ namespace Engarde_Teo.Player
             if (logEvents) Debug.Log("Bash Start");
             //Debug.Log("Bash Start");
             CameraController.Instance.RequestScreenShake(ShakeBash, bashNormal);
-            animator.BeginTrail();
+            //animator.BeginTrail();
         }
         void OnBashEnd()
         {
             if (logEvents) Debug.Log("Bash End");
             //Debug.Log("Bash End");
-            animator.EndTrail();
+            // animator.EndTrail();
         }
 
         #endregion
@@ -178,7 +186,8 @@ namespace Engarde_Teo.Player
         private void Awake()
         {
             body = GetComponent<Rigidbody2D>();
-            animator = GetComponent<PlayerAnimator>();
+            groundScript = GetComponent<GroundCheck>();
+            //animator = GetComponent<PlayerAnimator>();
 
             jumpHoldTimer = new SimpleTimer(JumpHoldMax);
             jumpCoyoteTimer = new SimpleTimer(JumpCoyoteTime);
@@ -190,6 +199,17 @@ namespace Engarde_Teo.Player
             boundWindowTimer = new SimpleTimer(BoundWindow);
 
             remainingBashes = BashCount;
+
+            sprites = GetComponentsInChildren<SpriteRenderer>();
+            SetColor();
+        }
+
+        private void SetColor()
+        {
+            //Color of Stickman
+            Color newColor = new Color(UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f));
+            foreach (SpriteRenderer sprite in sprites)
+                sprite.color = newColor;
         }
 
         private void Start()
@@ -203,82 +223,82 @@ namespace Engarde_Teo.Player
 
         private void Update()
         {
-
-            if (Input.GetKeyDown(KeyCode.BackQuote))
+            if (isLocalPlayer)
             {
-                body.MovePosition(Vector2.zero);
-                body.velocity = Vector2.zero;
-                velocity = Vector2.zero;
-                transform.position = Vector3.zero;
+                if (Input.GetKeyDown(KeyCode.BackQuote))
+                {
+                    body.MovePosition(Vector2.zero);
+                    body.velocity = Vector2.zero;
+                    velocity = Vector2.zero;
+                    transform.position = Vector3.zero;
+                }
             }
-
-            animator.Animate();
+            
+            //animator.Animate();
         }
 
         private void FixedUpdate()
         {
-            if (!isLocalPlayer)
-                return;
-            // Update timers
-            jumpHoldTimer.Update(true);
-            jumpCoyoteTimer.Update(true);
-            bashTimer.Update(true);
-            bashRefreshTimer.Update(true);
-            bashCooldownTimer.Update(true);
-            boundWindowTimer.Update(true);
-
-            // Set velocity to current velocity
-            velocity = body.velocity;
-
-            // Update direction variables
-            lastInputDir = inputDir;
-            inputDir = Util.CalculateDirection(Inputs.Horizontal, AxisDeadzone);
-
-            // Run global updates
-            UpdateGrounded();
-            UpdateBashRefill();
-            CheckStartBash();
-
-            // Execute state machine
-            switch (State)
+            if(isLocalPlayer)
             {
-                case PlayerState.Disabled: break;
-                case PlayerState.Movement: UpdateMovement(); break;
-                case PlayerState.Bash: UpdateBash(); break;
-                default: State = PlayerState.Disabled; break;
+                // Update timers
+                jumpHoldTimer.Update(true);
+                jumpCoyoteTimer.Update(true);
+                bashTimer.Update(true);
+                bashRefreshTimer.Update(true);
+                bashCooldownTimer.Update(true);
+                boundWindowTimer.Update(true);
+
+                // Set velocity to current velocity
+                velocity = body.velocity;
+
+                // Update direction variables
+                lastInputDir = inputDir;
+                inputDir = Util.CalculateDirection(Inputs.Horizontal, AxisDeadzone);
+
+                // Run global updates
+                UpdateGrounded();
+                UpdateBashRefill();
+                CheckStartBash();
+
+                // Execute state machine
+                switch (State)
+                {
+                    case PlayerState.Disabled: break;
+                    case PlayerState.Movement: UpdateMovement(); break;
+                    case PlayerState.Bash: UpdateBash(); break;
+                    default: State = PlayerState.Disabled; break;
+                }
+
+                //UpdateReflect();
+
+                // Apply calculated velocity
+                body.velocity = velocity;
             }
+            
 
-            //UpdateReflect();
-
-            // Apply calculated velocity
-            body.velocity = velocity;
-
-            animator.AnimateFixed();
+            //animator.AnimateFixed();
 
         }
 
         void UpdateGrounded()
         {
-            if (!isLocalPlayer)
-                return;
+
             bool lastGrounded = grounded;
 
             grounded = false;
 
-            // Boxcast below feet to find ground
-            Vector2 size = GroundCheck.size * transform.localScale;
-            Vector2 pos = (Vector2)transform.position + GroundCheck.offset;
-            var hits = Physics2D.OverlapBoxAll(pos, size, 0f, GroundedCastMask);
-            //Debug.Log(hits.ToCommaString(x => x.collider));
-
-            // Search through hits for surfaces
-            foreach (var hit in hits)
+            // Search through hits for surfaces // NOW USES LAYERS
+            if (groundScript.IsGrounded())
             {
-                EnvironmentSurface surface = hit.GetComponent<EnvironmentSurface>();
-                if (surface != null)
-                {
-                    if (surface.surfaceType == SurfaceTypes.Generic) grounded = true;
-                }
+                grounded = true;
+                //limbHead.AddForce(Vector2.up * 50);
+                limbBody.MoveRotation(Mathf.LerpAngle(limbBody.rotation, 90, 100 * Time.deltaTime));
+                DisableLegs(false);
+            }
+            else
+            {
+                DisableLegs(true);
             }
 
             // Raise event on touching ground
@@ -295,10 +315,16 @@ namespace Engarde_Teo.Player
 
         }
 
+        private void DisableLegs(bool check)
+        {
+            legUL.enabled = !check;
+            legR.enabled = !check;
+            legUR.enabled = !check;
+            legR.enabled = !check;
+        }
+
         void UpdateReflect()
         {
-            if (!isLocalPlayer)
-                return;
             if (reflectFlag)
             {
                 reflectFlag = false;
@@ -319,34 +345,30 @@ namespace Engarde_Teo.Player
             }
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (!isLocalPlayer)
-                return;
-            EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
-            if (surface != null)
-            {
-                if (surface.surfaceType == SurfaceTypes.Generic)
-                {
+        //private void OnCollisionEnter2D(Collision2D collision)
+        //{
+        //    EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
+        //    if (surface != null)
+        //    {
+        //        if (surface.surfaceType == SurfaceTypes.Generic)
+        //        {
 
-                    foreach (ContactPoint2D pt in collision.contacts)
-                    {
+        //            foreach (ContactPoint2D pt in collision.contacts)
+        //            {
 
-                        if (Mathf.Abs(pt.normal.y) < ReflectNormalY)
-                        {
+        //                if (Mathf.Abs(pt.normal.y) < ReflectNormalY)
+        //                {
 
-                            reflectFlag = true;
-                            reflectNormal = pt.normal;
+        //                    reflectFlag = true;
+        //                    reflectNormal = pt.normal;
 
-                            //Debug.Log("Reflect");
+        //                    //Debug.Log("Reflect");
 
-                        }
-
-                    }
-
-                }
-            }
-        }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
 
@@ -585,6 +607,11 @@ namespace Engarde_Teo.Player
             OnBashEnd();
 
         }
+
+        #endregion
+
+        #region LimbControl
+
 
         #endregion
 

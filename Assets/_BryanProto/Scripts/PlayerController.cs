@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 namespace Engarde_Bryan.Player {
 
 	public class PlayerController : MonoBehaviour {

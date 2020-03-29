@@ -19,7 +19,7 @@ namespace Engarde_Bryan {
 			set => m_position = value;
 		}
 
-		public Transform trackTarget { get; set; } = null;
+		public Transform trackTarget;
 		public float smoothtime = 0.02f;
 		private Vector2 refVel;
 		public ScreenShakeTool screenshake;

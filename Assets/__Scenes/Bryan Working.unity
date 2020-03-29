@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_position: {x: 0, y: 0}
-  trackTarget: {fileID: 817674525}
+  trackTarget: {fileID: 924339864}
   smoothtime: 0
   screenshake:
     time:

@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 7278131200999163990}
   - component: {fileID: 7278131200999163991}
   - component: {fileID: 7278131200999163988}
-  - component: {fileID: 7278131200999163989}
-  - component: {fileID: 7278131200999163986}
-  - component: {fileID: 7278131200999163987}
+  - component: {fileID: 1126609419174965220}
   - component: {fileID: 7278131200999163984}
   - component: {fileID: 7278131200999163985}
+  - component: {fileID: 1996358626432946237}
+  - component: {fileID: 3262373120521253129}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5774d345ff78b2446aa513945a0ab40b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7278131200999163989
+--- !u!114 &1126609419174965220
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,94 +90,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131200999164014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb33a63c04ecb049af77fd73d029bfe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Gravity: -20
-  TerminalVelocity: 12
-  OverspeedDecel: 35
-  ReflectNormalY: 0.4
-  ReflectMove: 5
-  ReflectBounce: {x: 1, y: 0.3}
-  WalkSpeed: 8
-  WalkAccel: 200
-  WalkAirMultiplier: 0.65
-  JumpHoldMax: 0.15
-  JumpSpeed: 5
-  JumpHorzBoost: 3
-  JumpBufferTime: 0.2
-  JumpCoyoteTime: 0.2
-  BashUnlimited: 1
-  BashCount: 2
-  BashAngleClamp: 15
-  BashSpeed: 20
-  BashTime: 0.2
-  BashEndDecrease: 4
-  BashCooldown: 0.5
-  BashRefreshDelay: 0.2
-  BashBuffer: 0.2
-  BoundSpeed: 5
-  BoundHorzSpeed: 16
-  BoundWindow: 0.4
-  MiniBoundHorzBoost: 8
-  BoundXPower: 0.25
-  ShakeBash: 0.7
-  limbHead: {fileID: 7278131201389981692}
-  limbBody: {fileID: 7278131202279055928}
-  legUR: {fileID: 7278131201249378035}
-  legR: {fileID: 7278131201696031157}
-  legUL: {fileID: 7278131201069206314}
-  legL: {fileID: 7278131202227580828}
-  m_playerState: 0
-  logEvents: 0
-  velocity: {x: 0, y: 0}
-  inputDir: 0
-  grounded: 0
-  reflectFlag: 0
-  reflectNormal: {x: 0, y: 0}
-  curJumpSpeed: 0
-  jumpHoldTimer:
-    duration: 0
-    current: 0
-  jumpCoyoteTimer:
-    duration: 0
-    current: 0
-  remainingBashes: 0
-  bashNormal: {x: 0, y: 0}
-  bashTimer:
-    duration: 0
-    current: 0
-  bashCooldownTimer:
-    duration: 0
-    current: 0
-  bashRefreshTimer:
-    duration: 0
-    current: 0
-  boundWindowTimer:
-    duration: 0
-    current: 0
---- !u!114 &7278131200999163986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7278131200999164014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c633c8d1329012448ba4f7924b92ecbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7278131200999163987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7278131200999164014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0220332c55248bb4e9ed5c40dd0664a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e3dbebb06c74cc4891d18deb5ae7c6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   groundLayer:
@@ -219,6 +132,95 @@ MonoBehaviour:
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01
   compressRotation: 1
+--- !u!114 &1996358626432946237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7278131200999164014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 169d84d4dd742604bbe5db5f8cd7db6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  Gravity: -20
+  TerminalVelocity: 12
+  OverspeedDecel: 35
+  ReflectNormalY: 0.4
+  ReflectMove: 5
+  ReflectBounce: {x: 1, y: 0.3}
+  WalkSpeed: 8
+  WalkAccel: 100
+  WalkAirMultiplier: 0.65
+  JumpHoldMax: 0.15
+  JumpSpeed: 5
+  JumpHorzBoost: 3
+  JumpBufferTime: 0.2
+  JumpCoyoteTime: 0.2
+  BashUnlimited: 0
+  BashCount: 2
+  BashAngleClamp: 15
+  BashSpeed: 20
+  BashTime: 0.2
+  BashEndDecrease: 4
+  BashCooldown: 0.5
+  BashRefreshDelay: 0.2
+  BashBuffer: 0.2
+  BoundSpeed: 5
+  BoundHorzSpeed: 16
+  BoundWindow: 0.4
+  MiniBoundHorzBoost: 8
+  BoundXPower: 0.25
+  ShakeBash: 0.7
+  limbHead: {fileID: 7278131201389981692}
+  limbBody: {fileID: 7278131202279055928}
+  legUR: {fileID: 8364384247255033793}
+  legR: {fileID: 3211782114446699773}
+  legUL: {fileID: 2856525467382993081}
+  legL: {fileID: 4786852550927791212}
+  m_playerState: 0
+  logEvents: 0
+  velocity: {x: 0, y: 0}
+  inputDir: 0
+  grounded: 0
+  reflectFlag: 0
+  reflectNormal: {x: 0, y: 0}
+  curJumpSpeed: 0
+  jumpHoldTimer:
+    duration: 0
+    current: 0
+  jumpCoyoteTimer:
+    duration: 0
+    current: 0
+  remainingBashes: 0
+  bashNormal: {x: 0, y: 0}
+  bashTimer:
+    duration: 0
+    current: 0
+  bashCooldownTimer:
+    duration: 0
+    current: 0
+  bashRefreshTimer:
+    duration: 0
+    current: 0
+  boundWindowTimer:
+    duration: 0
+    current: 0
+--- !u!114 &3262373120521253129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7278131200999164014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b596c5cc855e49944ab14294dad05af7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7278131201069206312
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +234,7 @@ GameObject:
   - component: {fileID: 7278131201069206315}
   - component: {fileID: 7278131201069206316}
   - component: {fileID: 7278131201069206317}
-  - component: {fileID: 7278131201069206314}
+  - component: {fileID: 2856525467382993081}
   m_Layer: 0
   m_Name: leg_upperLeft
   m_TagString: Untagged
@@ -365,7 +367,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000023841858, y: 2.842171e-14}
   m_Size: {x: 1.2000003, y: 0.26000005}
   m_Direction: 1
---- !u!114 &7278131201069206314
+--- !u!114 &2856525467382993081
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -374,7 +376,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131201069206312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
@@ -396,7 +398,7 @@ GameObject:
   - component: {fileID: 7278131201249378032}
   - component: {fileID: 7278131201249378037}
   - component: {fileID: 7278131201249378034}
-  - component: {fileID: 7278131201249378035}
+  - component: {fileID: 8364384247255033793}
   m_Layer: 0
   m_Name: leg_upperRight
   m_TagString: Untagged
@@ -529,7 +531,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000023841858, y: 2.842171e-14}
   m_Size: {x: 1.2000003, y: 0.26000005}
   m_Direction: 1
---- !u!114 &7278131201249378035
+--- !u!114 &8364384247255033793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -538,7 +540,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131201249378033}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
@@ -705,7 +707,7 @@ GameObject:
   - component: {fileID: 7278131201497326313}
   - component: {fileID: 7278131201497326310}
   - component: {fileID: 7278131201497326311}
-  - component: {fileID: 7278131201497326308}
+  - component: {fileID: 1167179442549270688}
   m_Layer: 0
   m_Name: armleft
   m_TagString: Untagged
@@ -838,7 +840,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.4, y: 0.26}
   m_Direction: 1
---- !u!114 &7278131201497326308
+--- !u!114 &1167179442549270688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -847,7 +849,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131201497326306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
@@ -869,7 +871,7 @@ GameObject:
   - component: {fileID: 7278131201696031159}
   - component: {fileID: 7278131201696031156}
   - component: {fileID: 7278131201696031154}
-  - component: {fileID: 7278131201696031157}
+  - component: {fileID: 3211782114446699773}
   m_Layer: 0
   m_Name: leg_right
   m_TagString: Untagged
@@ -1002,7 +1004,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000047683716, y: 5.684342e-14}
   m_Size: {x: 1.8000004, y: 0.26000005}
   m_Direction: 1
---- !u!114 &7278131201696031157
+--- !u!114 &3211782114446699773
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1011,7 +1013,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131201696031155}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
@@ -1323,7 +1325,7 @@ GameObject:
   - component: {fileID: 7278131202227580830}
   - component: {fileID: 7278131202227580831}
   - component: {fileID: 7278131202227580829}
-  - component: {fileID: 7278131202227580828}
+  - component: {fileID: 4786852550927791212}
   m_Layer: 0
   m_Name: leg_left
   m_TagString: Untagged
@@ -1456,7 +1458,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000047683716, y: 5.684342e-14}
   m_Size: {x: 1.8000004, y: 0.26000005}
   m_Direction: 1
---- !u!114 &7278131202227580828
+--- !u!114 &4786852550927791212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1465,7 +1467,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131202227580826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
@@ -1771,7 +1773,7 @@ GameObject:
   - component: {fileID: 7278131202295700308}
   - component: {fileID: 7278131202295700309}
   - component: {fileID: 7278131202295700306}
-  - component: {fileID: 7278131202295700307}
+  - component: {fileID: 3961262192004909670}
   m_Layer: 0
   m_Name: armRight
   m_TagString: Untagged
@@ -1904,7 +1906,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.4, y: 0.26}
   m_Direction: 1
---- !u!114 &7278131202295700307
+--- !u!114 &3961262192004909670
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1913,7 +1915,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7278131202295700305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd233e1fc8697934195f10324c75fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: 5226fd93dd5c8d848987a48ed8cabc34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 7278131202279055927}
