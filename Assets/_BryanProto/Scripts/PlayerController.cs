@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
+
 namespace Engarde_Bryan.Player {
 
-	public class PlayerController : NetworkBehaviour {
+	public class PlayerController : MonoBehaviour {
 
 		public enum PlayerState {
 			Disabled, Movement, Bash
@@ -189,7 +189,6 @@ namespace Engarde_Bryan.Player {
 		#region Update
 
 		private void Update() {
-            
 			if (Input.GetKeyDown(KeyCode.BackQuote)) {
 				body.MovePosition(Vector2.zero);
 				body.velocity = Vector2.zero;
@@ -201,10 +200,9 @@ namespace Engarde_Bryan.Player {
 		}
 
 		private void FixedUpdate() {
-            if (!isLocalPlayer)
-                return;
-            // Update timers
-            jumpHoldTimer.Update(true);
+
+			// Update timers
+			jumpHoldTimer.Update(true);
 			jumpCoyoteTimer.Update(true);
 			bashTimer.Update(true);
 			bashRefreshTimer.Update(true);
@@ -241,9 +239,8 @@ namespace Engarde_Bryan.Player {
 		}
 
 		void UpdateGrounded() {
-            if (!isLocalPlayer)
-                return;
-            bool lastGrounded = grounded;
+
+			bool lastGrounded = grounded;
 
 			grounded = false;
 
@@ -274,9 +271,7 @@ namespace Engarde_Bryan.Player {
 		}
 
 		void UpdateReflect() {
-            if (!isLocalPlayer)
-                return;
-            if (reflectFlag) {
+			if (reflectFlag) {
 				reflectFlag = false;
 
 				float curDir = Mathf.Sign(velocity.x);
@@ -296,9 +291,7 @@ namespace Engarde_Bryan.Player {
 		}
 
 		private void OnCollisionEnter2D(Collision2D collision) {
-            if (!isLocalPlayer)
-                return;
-            EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
+			EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
 			if (surface != null) {
 				if (surface.surfaceType == SurfaceTypes.Generic) {
 

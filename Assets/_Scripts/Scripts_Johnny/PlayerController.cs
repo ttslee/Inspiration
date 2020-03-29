@@ -64,10 +64,8 @@ namespace Engarde_Johnny.Player
         public float ShakeBash = 0.7f;
 
         Rigidbody2D body;
-        SpriteRenderer[] sprites;
 
         [Space]
-        public Rigidbody2D limbHead;
         public Rigidbody2D limbBody;
         public LimbController legUR;
         public LimbController legR;
@@ -186,7 +184,7 @@ namespace Engarde_Johnny.Player
         private void Awake()
         {
             body = GetComponent<Rigidbody2D>();
-            groundScript = GetComponent<GroundCheck>();
+            groundScript = GetComponentInChildren<GroundCheck>();
             //animator = GetComponent<PlayerAnimator>();
 
             jumpHoldTimer = new SimpleTimer(JumpHoldMax);
@@ -200,13 +198,8 @@ namespace Engarde_Johnny.Player
 
             remainingBashes = BashCount;
 
-            sprites = GetComponentsInChildren<SpriteRenderer>();
-            SetColor();
-        }
-
-        private void SetColor()
-        {
-            //Color of Stickman
+            //Color
+            SpriteRenderer[] sprites = GetComponentsInChildren<SpriteRenderer>();
             Color newColor = new Color(UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f), UnityEngine.Random.Range(0f, 0.7f));
             foreach (SpriteRenderer sprite in sprites)
                 sprite.color = newColor;
@@ -282,17 +275,13 @@ namespace Engarde_Johnny.Player
 
             grounded = false;
 
-            // Search through hits for surfaces // NOW USES LAYERS
+            // Search through hits for surfaces
             if (groundScript.IsGrounded())
-            {
                 grounded = true;
-                //limbHead.AddForce(Vector2.up * 50);
-                limbBody.MoveRotation(Mathf.LerpAngle(limbBody.rotation, 90, 100 * Time.deltaTime));
-                DisableLegs(false);
-            } else
-            {
-                DisableLegs(true);
-            }
+
+            //Making limbBody upright
+            if (grounded)
+                RotateTo(limbBody, 0, 1000);
 
             // Raise event on touching ground
             if (grounded && lastGrounded != grounded)
@@ -306,14 +295,6 @@ namespace Engarde_Johnny.Player
                 jumpCoyoteTimer.Start();
             }
 
-        }
-
-        private void DisableLegs(bool check)
-        {
-            legUL.enabled = !check;
-            legR.enabled = !check;
-            legUR.enabled = !check;
-            legR.enabled = !check;
         }
 
         void UpdateReflect()
@@ -338,30 +319,32 @@ namespace Engarde_Johnny.Player
             }
         }
 
-        //private void OnCollisionEnter2D(Collision2D collision)
-        //{
-        //    EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
-        //    if (surface != null)
-        //    {
-        //        if (surface.surfaceType == SurfaceTypes.Generic)
-        //        {
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            EnvironmentSurface surface = collision.gameObject.GetComponent<EnvironmentSurface>();
+            if (surface != null)
+            {
+                if (surface.surfaceType == SurfaceTypes.Generic)
+                {
 
-        //            foreach (ContactPoint2D pt in collision.contacts)
-        //            {
+                    foreach (ContactPoint2D pt in collision.contacts)
+                    {
 
-        //                if (Mathf.Abs(pt.normal.y) < ReflectNormalY)
-        //                {
+                        if (Mathf.Abs(pt.normal.y) < ReflectNormalY)
+                        {
 
-        //                    reflectFlag = true;
-        //                    reflectNormal = pt.normal;
+                            reflectFlag = true;
+                            reflectNormal = pt.normal;
 
-        //                    //Debug.Log("Reflect");
+                            //Debug.Log("Reflect");
 
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+                        }
+
+                    }
+
+                }
+            }
+        }
 
         #endregion
 
@@ -605,6 +588,23 @@ namespace Engarde_Johnny.Player
 
         #region LimbControl
 
+        //Specifically used for the body
+        void RotateTo(Rigidbody2D rigidbody, float angle, float force)
+        {
+            angle = Mathf.DeltaAngle(transform.eulerAngles.z, angle);
+
+            var x = angle > 0 ? 1 : -1;
+            angle = Mathf.Abs(angle * .1f);
+            if (angle > 2)
+            {
+                angle = 2;
+            }
+            angle *= .5f;
+            angle *= (1 + angle);
+
+            rigidbody.angularVelocity *= .5f;
+            rigidbody.AddTorque(angle * force);
+        }
 
         #endregion
 

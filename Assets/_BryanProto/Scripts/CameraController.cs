@@ -19,9 +19,10 @@ namespace Engarde_Bryan {
 			set => m_position = value;
 		}
 
-		public Transform trackTarget { get; set; } = null;
+		public Transform trackTarget;
 		public float smoothtime = 0.02f;
 		private Vector2 refVel;
+
 		public ScreenShakeTool screenshake;
 
 		private void Awake() {
@@ -30,15 +31,13 @@ namespace Engarde_Bryan {
 		}
 
 		private void LateUpdate() {
-            if(trackTarget != null) {
-                Vector2 target = trackTarget.position;
-                Position = Vector2.SmoothDamp(Position, target, ref refVel, smoothtime);
+			Vector2 target = trackTarget.position;
+			Position = Vector2.SmoothDamp(Position, target, ref refVel, smoothtime);
 
-                screenshake.Update();
-                Vector2 pfinal = Position + screenshake.Offset;
-                transform.position = new Vector3(pfinal.x, pfinal.y, transform.position.z);
-            }
-        }
+			screenshake.Update();
+			Vector2 pfinal = Position + screenshake.Offset;
+			transform.position = new Vector3(pfinal.x, pfinal.y, transform.position.z);
+		}
 
 		/// <summary>
 		/// Request the camera begin a screenshake with given magnitude and initial direction.
