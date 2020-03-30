@@ -287,7 +287,8 @@ namespace Engarde_Johnny.Player
             {
                 grounded = true;
                 //limbHead.AddForce(Vector2.up * 50);
-                limbBody.MoveRotation(Mathf.LerpAngle(limbBody.rotation, 90, 100 * Time.deltaTime));
+                //Debug.Log(limbBody.angularVelocity);
+                limbBody.MoveRotation(90 + 50 * Time.fixedDeltaTime);
                 DisableLegs(false);
             } else
             {

@@ -394,7 +394,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!70 &569807674
 CapsuleCollider2D:
@@ -526,7 +526,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 3
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -601,6 +601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_position: {x: 0, y: 0}
+  trackTarget: {fileID: 1072886736}
   smoothtime: 0
   screenshake:
     time:
@@ -866,7 +867,7 @@ MonoBehaviour:
   dirFlip: 0
   getRoots: 0
   targetPos: {x: 0.1, y: -2}
-  force: 20
+  force: 25
 --- !u!1 &955755191
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,7 +962,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &955755196
 SpriteRenderer:
@@ -1169,7 +1170,7 @@ MonoBehaviour:
   BashUnlimited: 1
   BashCount: 2
   BashAngleClamp: 15
-  BashSpeed: 20
+  BashSpeed: 30
   BashTime: 0.2
   BashEndDecrease: 4
   BashCooldown: 0.5
@@ -1283,7 +1284,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &1282244945
 HingeJoint2D:
@@ -1517,7 +1518,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!70 &1314997161
 CapsuleCollider2D:
@@ -1552,7 +1553,7 @@ MonoBehaviour:
   dirFlip: 0
   getRoots: 0
   targetPos: {x: -0.2, y: -3}
-  force: 25
+  force: 30
 --- !u!1 &1597474423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,7 +1717,7 @@ MonoBehaviour:
   dirFlip: 0
   getRoots: 0
   targetPos: {x: -0.1, y: -2}
-  force: 20
+  force: 25
 --- !u!1 &1622892685
 GameObject:
   m_ObjectHideFlags: 0
@@ -2209,7 +2210,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &1718086555
 SpriteRenderer:
@@ -2278,4 +2279,4 @@ MonoBehaviour:
   dirFlip: 0
   getRoots: 0
   targetPos: {x: 0.2, y: -3}
-  force: 25
+  force: 30
