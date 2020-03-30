@@ -202,6 +202,7 @@ namespace Engarde_Teo.Player
 
             sprites = GetComponentsInChildren<SpriteRenderer>();
             SetColor();
+            CameraController.Instance.trackTarget = transform;
         }
 
         private void SetColor()
