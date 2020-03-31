@@ -1163,15 +1163,15 @@ MonoBehaviour:
   WalkAccel: 200
   WalkAirMultiplier: 0.65
   JumpHoldMax: 0.15
-  JumpSpeed: 5
+  JumpSpeed: 22
   JumpHorzBoost: 3
-  JumpBufferTime: 0.2
-  JumpCoyoteTime: 0.2
+  JumpBufferTime: 0.1
+  JumpCoyoteTime: 0.1
   JumpDelayTime: 0.5
   BashUnlimited: 1
   BashCount: 2
   BashAngleClamp: 15
-  BashSpeed: 20
+  BashSpeed: 30
   BashTime: 0.2
   BashEndDecrease: 4
   BashCooldown: 0.5
