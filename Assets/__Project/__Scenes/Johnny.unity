@@ -601,6 +601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_position: {x: 0, y: 0}
+  trackTarget: {fileID: 1072886736}
   smoothtime: 0
   screenshake:
     time:
@@ -1166,6 +1167,7 @@ MonoBehaviour:
   JumpHorzBoost: 3
   JumpBufferTime: 0.2
   JumpCoyoteTime: 0.2
+  JumpDelayTime: 0.5
   BashUnlimited: 1
   BashCount: 2
   BashAngleClamp: 15
@@ -1199,6 +1201,9 @@ MonoBehaviour:
     duration: 0
     current: 0
   jumpCoyoteTimer:
+    duration: 0
+    current: 0
+  jumpDelayTimer:
     duration: 0
     current: 0
   remainingBashes: 0
