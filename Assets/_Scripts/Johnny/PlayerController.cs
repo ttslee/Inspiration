@@ -41,6 +41,7 @@ namespace Engarde_Johnny.Player
         public float JumpHorzBoost = 3f;
         public float JumpBufferTime = 0.2f;
         public float JumpCoyoteTime = 0.2f;
+        public float JumpDelayTime = 0.5f;
 
         [Space]
         public bool BashUnlimited;
@@ -113,6 +114,7 @@ namespace Engarde_Johnny.Player
         public float curJumpSpeed;
         public SimpleTimer jumpHoldTimer;
         public SimpleTimer jumpCoyoteTimer;
+        public SimpleTimer jumpDelayTimer;
 
         [Space]
         public int remainingBashes;
@@ -151,6 +153,7 @@ namespace Engarde_Johnny.Player
         {
             if (logEvents) Debug.Log("Jump");
             //Debug.Log("Jump");
+            jumpDelayTimer.Start();
         }
 
         void OnSuperJump()
@@ -191,6 +194,8 @@ namespace Engarde_Johnny.Player
 
             jumpHoldTimer = new SimpleTimer(JumpHoldMax);
             jumpCoyoteTimer = new SimpleTimer(JumpCoyoteTime);
+            jumpDelayTimer = new SimpleTimer(JumpDelayTime);
+
 
             bashRefreshTimer = new SimpleTimer(BashRefreshDelay);
             bashTimer = new SimpleTimer(BashTime);
@@ -240,6 +245,7 @@ namespace Engarde_Johnny.Player
             // Update timers
             jumpHoldTimer.Update(true);
             jumpCoyoteTimer.Update(true);
+            jumpDelayTimer.Update(true);
             bashTimer.Update(true);
             bashRefreshTimer.Update(true);
             bashCooldownTimer.Update(true);
@@ -283,13 +289,13 @@ namespace Engarde_Johnny.Player
             grounded = false;
 
             // Search through hits for surfaces // NOW USES LAYERS
-            if (groundScript.IsGrounded())
+            if (groundScript.IsGrounded() && bashCooldownTimer.Done)
             {
                 grounded = true;
-                //limbHead.AddForce(Vector2.up * 50);
-                //Debug.Log(limbBody.angularVelocity);
                 limbBody.MoveRotation(90 + 50 * Time.fixedDeltaTime);
                 DisableLegs(false);
+
+                //Maybe also add a ground effect here or only when hes directly skidding against the ground
             } else
             {
                 DisableLegs(true);
@@ -457,12 +463,13 @@ namespace Engarde_Johnny.Player
         {
 
             // Start jump and handle buffered jumps
-            if (Inputs.JumpDown.Get(JumpBufferTime) && (grounded || jumpCoyoteTimer.Running))
+            if (jumpDelayTimer.Done && Inputs.JumpDown.Get(JumpBufferTime) && (grounded || jumpCoyoteTimer.Running))
             {
 
                 Inputs.JumpDown.Clear(); // consume buffer
 
                 jumpHoldTimer.Start();
+                jumpDelayTimer.Start();
 
                 // Set vertical jump speed
                 curJumpSpeed = JumpSpeed;
@@ -601,11 +608,6 @@ namespace Engarde_Johnny.Player
             OnBashEnd();
 
         }
-
-        #endregion
-
-        #region LimbControl
-
 
         #endregion
 
