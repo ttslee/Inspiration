@@ -12,8 +12,8 @@ namespace Engarde_Johnny
         private Vector2 offset;
         private Vector2 relativeOffset => offset.x/2 * root.right + offset.y/2 * root.up;
 
-        private bool flip = false;
-        private bool sin = false;
+        private bool flip = false; //Left/Right
+        private bool sin = false; //Up/Down
 
         public Limb(Rigidbody2D rb, bool flipped, bool sin)
         {
