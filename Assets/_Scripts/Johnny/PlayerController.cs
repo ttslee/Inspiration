@@ -37,17 +37,17 @@ namespace Engarde_Johnny.Player
 
         [Space]
         public float JumpHoldMax = 0.15f;
-        public float JumpSpeed = 5f;
+        public float JumpSpeed = 22f;
         public float JumpHorzBoost = 3f;
-        public float JumpBufferTime = 0.2f;
-        public float JumpCoyoteTime = 0.2f;
+        public float JumpBufferTime = 0.1f;
+        public float JumpCoyoteTime = 0.1f;
         public float JumpDelayTime = 0.5f;
 
         [Space]
         public bool BashUnlimited;
         public int BashCount = 2;
         public float BashAngleClamp = 15f;
-        public float BashSpeed = 20f;
+        public float BashSpeed = 30f;
         public float BashTime = 0.2f;
         public float BashEndDecrease = 4f;
         public float BashCooldown = 0.5f;
