@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Engarde_Teo;
-using Engarde_Teo.Player;
-using Mirror;
+using Engarde_Bryan;
+using Engarde_Bryan.Player;
+
 namespace Engarde_Teo.Player
 {
 
-    public class PlayerController : NetworkBehaviour
+    public class PlayerController : MonoBehaviour
     {
 
         public enum PlayerState
@@ -41,6 +41,7 @@ namespace Engarde_Teo.Player
         public float JumpHorzBoost = 3f;
         public float JumpBufferTime = 0.2f;
         public float JumpCoyoteTime = 0.2f;
+        public float JumpDelayTime = 0.5f;
 
         [Space]
         public bool BashUnlimited;
@@ -113,6 +114,7 @@ namespace Engarde_Teo.Player
         public float curJumpSpeed;
         public SimpleTimer jumpHoldTimer;
         public SimpleTimer jumpCoyoteTimer;
+        public SimpleTimer jumpDelayTimer;
 
         [Space]
         public int remainingBashes;
@@ -151,6 +153,7 @@ namespace Engarde_Teo.Player
         {
             if (logEvents) Debug.Log("Jump");
             //Debug.Log("Jump");
+            jumpDelayTimer.Start();
         }
 
         void OnSuperJump()
@@ -191,6 +194,8 @@ namespace Engarde_Teo.Player
 
             jumpHoldTimer = new SimpleTimer(JumpHoldMax);
             jumpCoyoteTimer = new SimpleTimer(JumpCoyoteTime);
+            jumpDelayTimer = new SimpleTimer(JumpDelayTime);
+
 
             bashRefreshTimer = new SimpleTimer(BashRefreshDelay);
             bashTimer = new SimpleTimer(BashTime);
@@ -224,59 +229,54 @@ namespace Engarde_Teo.Player
 
         private void Update()
         {
-            if (isLocalPlayer)
+            if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                if (Input.GetKeyDown(KeyCode.BackQuote))
-                {
-                    body.MovePosition(Vector2.zero);
-                    body.velocity = Vector2.zero;
-                    velocity = Vector2.zero;
-                    transform.position = Vector3.zero;
-                }
+                body.MovePosition(Vector2.zero);
+                body.velocity = Vector2.zero;
+                velocity = Vector2.zero;
+                transform.position = Vector3.zero;
             }
-            
+
             //animator.Animate();
         }
 
         private void FixedUpdate()
         {
-            if(isLocalPlayer)
+
+            // Update timers
+            jumpHoldTimer.Update(true);
+            jumpCoyoteTimer.Update(true);
+            jumpDelayTimer.Update(true);
+            bashTimer.Update(true);
+            bashRefreshTimer.Update(true);
+            bashCooldownTimer.Update(true);
+            boundWindowTimer.Update(true);
+
+            // Set velocity to current velocity
+            velocity = body.velocity;
+
+            // Update direction variables
+            lastInputDir = inputDir;
+            inputDir = Util.CalculateDirection(Inputs.Horizontal, AxisDeadzone);
+
+            // Run global updates
+            UpdateGrounded();
+            UpdateBashRefill();
+            CheckStartBash();
+
+            // Execute state machine
+            switch (State)
             {
-                // Update timers
-                jumpHoldTimer.Update(true);
-                jumpCoyoteTimer.Update(true);
-                bashTimer.Update(true);
-                bashRefreshTimer.Update(true);
-                bashCooldownTimer.Update(true);
-                boundWindowTimer.Update(true);
-
-                // Set velocity to current velocity
-                velocity = body.velocity;
-
-                // Update direction variables
-                lastInputDir = inputDir;
-                inputDir = Util.CalculateDirection(Inputs.Horizontal, AxisDeadzone);
-
-                // Run global updates
-                UpdateGrounded();
-                UpdateBashRefill();
-                CheckStartBash();
-
-                // Execute state machine
-                switch (State)
-                {
-                    case PlayerState.Disabled: break;
-                    case PlayerState.Movement: UpdateMovement(); break;
-                    case PlayerState.Bash: UpdateBash(); break;
-                    default: State = PlayerState.Disabled; break;
-                }
-
-                //UpdateReflect();
-
-                // Apply calculated velocity
-                body.velocity = velocity;
+                case PlayerState.Disabled: break;
+                case PlayerState.Movement: UpdateMovement(); break;
+                case PlayerState.Bash: UpdateBash(); break;
+                default: State = PlayerState.Disabled; break;
             }
-            
+
+            //UpdateReflect();
+
+            // Apply calculated velocity
+            body.velocity = velocity;
 
             //animator.AnimateFixed();
 
@@ -290,12 +290,13 @@ namespace Engarde_Teo.Player
             grounded = false;
 
             // Search through hits for surfaces // NOW USES LAYERS
-            if (groundScript.IsGrounded())
+            if (groundScript.IsGrounded() && bashCooldownTimer.Done)
             {
                 grounded = true;
-                //limbHead.AddForce(Vector2.up * 50);
-                limbBody.MoveRotation(Mathf.LerpAngle(limbBody.rotation, 90, 100 * Time.deltaTime));
+                limbBody.MoveRotation(90 + 50 * Time.fixedDeltaTime);
                 DisableLegs(false);
+
+                //Maybe also add a ground effect here or only when hes directly skidding against the ground
             }
             else
             {
@@ -464,12 +465,13 @@ namespace Engarde_Teo.Player
         {
 
             // Start jump and handle buffered jumps
-            if (Inputs.JumpDown.Get(JumpBufferTime) && (grounded || jumpCoyoteTimer.Running))
+            if (jumpDelayTimer.Done && Inputs.JumpDown.Get(JumpBufferTime) && (grounded || jumpCoyoteTimer.Running))
             {
 
                 Inputs.JumpDown.Clear(); // consume buffer
 
                 jumpHoldTimer.Start();
+                jumpDelayTimer.Start();
 
                 // Set vertical jump speed
                 curJumpSpeed = JumpSpeed;
@@ -608,11 +610,6 @@ namespace Engarde_Teo.Player
             OnBashEnd();
 
         }
-
-        #endregion
-
-        #region LimbControl
-
 
         #endregion
 

@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 676854931}
   m_Layer: 8
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3820,7 +3820,7 @@ MonoBehaviour:
   networkAddress: localhost
   maxConnections: 4
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 7278131200999164014, guid: d0ad7a2d078c0b34da7fa8da93621247,
+  playerPrefab: {fileID: 1348429344019813333, guid: e0185095423ea7643bf51ae4ba5e55d3,
     type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
