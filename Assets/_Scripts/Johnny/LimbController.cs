@@ -35,12 +35,25 @@ namespace Engarde_Johnny.Player
                 targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
+        public void SetPosition(Vector2 pos)
+        {
+            currentPos = pos + (Vector2)root.position;
+            resetPos = false;
+        }
+
+        bool resetPos = true;
+        Vector2 currentPos;
         private void FixedUpdate()
         {
+            if (resetPos) //Legs
+                currentPos = targetPos + (Vector2)root.position;
+            else
+                resetPos = true;
+
             foreach (var limb in limbs)
             {
                 if (useMousePos == false)
-                    limb.RotateTowards(targetPos + (Vector2)root.position, force);
+                    limb.RotateTowards(currentPos, force);
                 else
                     limb.RotateTowards(Camera.main.ScreenToWorldPoint(Input.mousePosition), force);
             }

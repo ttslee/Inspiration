@@ -104,6 +104,8 @@ namespace Engarde_Johnny.Player
         [Space]
         public int inputDir;
         private int lastInputDir;
+        private int moveIndex;
+        private int moveDir = 1;
 
         private GroundCheck groundScript;
         public bool grounded;
@@ -314,14 +316,6 @@ namespace Engarde_Johnny.Player
 
         }
 
-        private void DisableLegs(bool check)
-        {
-            legUL.enabled = !check;
-            legR.enabled = !check;
-            legUR.enabled = !check;
-            legR.enabled = !check;
-        }
-
         void UpdateReflect()
         {
             if (reflectFlag)
@@ -402,6 +396,9 @@ namespace Engarde_Johnny.Player
             // Reduce acceleration if airborne
             float accelMult = grounded ? 1f : WalkAirMultiplier;
 
+            //If grounded and walking
+            MoveLegs();
+
             // Accelerate toward new velocity
             if (Mathf.Abs(velocity.x) > WalkSpeed && inputDir == Mathf.Sign(velocity.x))
             {
@@ -419,6 +416,36 @@ namespace Engarde_Johnny.Player
                 OnBeginWalk();
             }
 
+        }
+
+        #endregion
+
+        #region LimbControl
+
+        private void MoveLegs()
+        {
+            if (grounded && inputDir != 0)
+            {
+                if (moveIndex > 10)
+                {
+                    moveIndex = 0;
+                    moveDir *= -1;
+                }
+                legL.SetPosition(Vector2.right * moveDir + Vector2.down * 15);
+                legUL.SetPosition(Vector2.right * moveDir + Vector2.down * 4);
+                legR.SetPosition(-Vector2.right * moveDir + Vector2.down * 15);
+                legUR.SetPosition(-Vector2.right * moveDir + Vector2.down * 4);
+                moveIndex++;
+            }
+        }
+
+
+        private void DisableLegs(bool check)
+        {
+            legUL.enabled = !check;
+            legR.enabled = !check;
+            legUR.enabled = !check;
+            legR.enabled = !check;
         }
 
         #endregion
