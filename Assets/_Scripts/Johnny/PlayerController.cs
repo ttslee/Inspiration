@@ -153,7 +153,6 @@ namespace Engarde_Johnny.Player
         {
             if (logEvents) Debug.Log("Jump");
             //Debug.Log("Jump");
-            jumpDelayTimer.Start();
         }
 
         void OnSuperJump()
@@ -292,7 +291,7 @@ namespace Engarde_Johnny.Player
             if (groundScript.IsGrounded() && bashCooldownTimer.Done)
             {
                 grounded = true;
-                limbBody.MoveRotation(90 + 50 * Time.fixedDeltaTime);
+                limbBody.MoveRotation(90);
                 DisableLegs(false);
 
                 //Maybe also add a ground effect here or only when hes directly skidding against the ground
