@@ -432,9 +432,9 @@ namespace Engarde_Johnny.Player
                     moveDir *= -1;
                 }
                 legL.SetPosition(Vector2.right * moveDir + Vector2.down * 15);
-                legUL.SetPosition(Vector2.right * moveDir + Vector2.down * 4);
+                legUL.SetPosition(Vector2.right * moveDir + Vector2.down * 10);
                 legR.SetPosition(-Vector2.right * moveDir + Vector2.down * 15);
-                legUR.SetPosition(-Vector2.right * moveDir + Vector2.down * 4);
+                legUR.SetPosition(-Vector2.right * moveDir + Vector2.down * 10);
                 moveIndex++;
             }
         }
