@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Engarde_Bryan;
 using Engarde_Bryan.Player;
+using UnityEngine.SceneManagement;
 
 namespace Engarde_Johnny.Player
 {
@@ -235,7 +236,18 @@ namespace Engarde_Johnny.Player
                 body.velocity = Vector2.zero;
                 velocity = Vector2.zero;
                 transform.position = Vector3.zero;
-            }
+            } else if (Input.GetKeyDown("escape"))
+            {
+                // save any game data here
+                #if UNITY_EDITOR
+                // Application.Quit() does not work in the editor so
+                // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+                UnityEditor.EditorApplication.isPlaying = false;
+                #else
+                    Application.Quit();
+                #endif
+            } else if (Input.GetKeyDown("r"))
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
             //animator.Animate();
         }

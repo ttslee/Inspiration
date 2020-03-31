@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: e3e450f6a6028af43b132f918e436c3e
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Charter
+  fontNames:
+  - Charter
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 80a488b561996374a99ec9b17245a08f, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
